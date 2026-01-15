@@ -12,7 +12,7 @@
 
 ## 🚀 在线游戏
 
-[点击这里开始游戏](https://hnaloveme.github.io/kuikly-bomber-game/)
+[点击这里开始游戏](https://hdnaloveme.github.io/kuikly-bomber-game/)
 
 ## 🎮 游戏操作
 
