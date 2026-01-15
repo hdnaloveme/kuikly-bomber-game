@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Pages 测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 { font-size: 2.5em; margin-bottom: 20px; }
+        .status { font-size: 1.2em; margin: 20px 0; }
+        .success { color: #4CAF50; }
+        .link {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        .link:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 GitHub Pages 部署成功！</h1>
+        <div class="status success">✅ 网站已正常运行</div>
+        <p>如果你能看到这个页面，说明 GitHub Pages 已经成功部署。</p>
+        <p>现在可以访问完整的炸弹人游戏了！</p>
+        
+        <a href="index.html" class="link">🎮 开始游戏</a>
+        <a href="https://github.com/hnaloveme/kuikly-bomber-game" class="link">📂 查看源码</a>
+        
+        <div style="margin-top: 30px; font-size: 0.9em; opacity: 0.8;">
+            <p>🌐 当前网址: <span id="currentUrl"></span></p>
+            <p>⏰ 页面加载时间: <span id="loadTime"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentUrl').textContent = window.location.href;
+        document.getElementById('loadTime').textContent = new Date().toLocaleString();
+        
+        // 3秒后自动跳转到游戏
+        setTimeout(() => {
+            if (confirm('3秒后自动跳转到游戏，现在跳转吗？')) {
+                window.location.href = 'index.html';
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
