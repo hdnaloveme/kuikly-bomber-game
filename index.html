@@ -1300,160 +1300,6 @@ boom boom boom</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
-    // ==================== 浏览器兼容性检测 ====================
-    function checkBrowserCompatibility() {
-        const issues = [];
-        
-        // 检查WebGL支持
-        try {
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            if (!gl) {
-                issues.push('WebGL不支持 - 游戏需要硬件加速');
-            }
-        } catch (e) {
-            issues.push('WebGL检测失败');
-        }
-        
-        // 检查关键API
-        if (typeof requestAnimationFrame === 'undefined') {
-            issues.push('requestAnimationFrame不支持');
-        }
-        
-        if (typeof THREE === 'undefined') {
-            issues.push('Three.js加载失败');
-        }
-        
-        // 检查ES6特性
-        try {
-            eval('const test = 1;');
-        } catch (e) {
-            issues.push('ES6语法不支持');
-        }
-        
-        return issues;
-    }
-    
-    function showCompatibilityWarning(issues) {
-        const warningDiv = document.createElement('div');
-        warningDiv.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            color: white;
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: Arial, sans-serif;
-        `;
-        
-        warningDiv.innerHTML = `
-            <div style="text-align: center; padding: 30px; background: #333; border-radius: 10px; max-width: 600px;">
-                <h2 style="color: #ff6b6b;">⚠️ 浏览器兼容性问题</h2>
-                <p>检测到以下问题，可能导致游戏无法正常运行：</p>
-                <ul style="text-align: left; color: #ffeb3b;">
-                    ${issues.map(issue => `<li>${issue}</li>`).join('')}
-                </ul>
-                <p><strong>建议使用以下现代浏览器：</strong></p>
-                <p>🌐 Chrome 80+ | 🦊 Firefox 75+ | 🌐 Edge 80+ | 🍎 Safari 13+</p>
-                <p style="color: #4CAF50;"><strong>虚幻引擎5用户：</strong>请使用独立的现代浏览器</p>
-                <button onclick="this.parentElement.parentElement.remove()" 
-                        style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px;">
-                    仍要尝试运行
-                </button>
-                <button onclick="window.open('浏览器兼容性检测.html')" 
-                        style="background: #2196F3; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px;">
-                    详细检测
-                </button>
-            </div>
-        `;
-        
-        document.body.appendChild(warningDiv);
-    }
-    
-    // 页面加载完成后检测兼容性
-    window.addEventListener('load', function() {
-        setTimeout(() => {
-            const issues = checkBrowserCompatibility();
-            if (issues.length > 0) {
-                showCompatibilityWarning(issues);
-            }
-        }, 1000);
-    });
-    </script>
-    <script>
-    // ==================== 兼容性修复 ====================
-    // 为老版本浏览器添加requestAnimationFrame支持
-    (function() {
-        var lastTime = 0;
-        var vendors = ['ms', 'moz', 'webkit', 'o'];
-        for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-            window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
-                                       || window[vendors[x]+'CancelRequestAnimationFrame'];
-        }
-     
-        if (!window.requestAnimationFrame)
-            window.requestAnimationFrame = function(callback, element) {
-                var currTime = new Date().getTime();
-                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-                var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
-                  timeToCall);
-                lastTime = currTime + timeToCall;
-                return id;
-            };
-     
-        if (!window.cancelAnimationFrame)
-            window.cancelAnimationFrame = function(id) {
-                clearTimeout(id);
-            };
-    }());
-    
-    // 添加性能监控和降级处理
-    var performanceMode = 'auto'; // auto, low, high
-    var frameCount = 0;
-    var lastFPSCheck = 0;
-    var currentFPS = 60;
-    
-    function checkPerformance() {
-        frameCount++;
-        var now = performance.now ? performance.now() : Date.now();
-        
-        if (now - lastFPSCheck >= 1000) {
-            currentFPS = frameCount;
-            frameCount = 0;
-            lastFPSCheck = now;
-            
-            // 如果FPS太低，自动降低质量
-            if (currentFPS < 20 && performanceMode === 'auto') {
-                console.log('检测到低FPS，切换到低质量模式');
-                enableLowQualityMode();
-            }
-        }
-    }
-    
-    function enableLowQualityMode() {
-        if (renderer) {
-            renderer.setPixelRatio(1); // 降低像素比
-            renderer.shadowMap.enabled = false; // 禁用阴影
-            
-            // 减少粒子效果
-            scene.traverse(function(child) {
-                if (child.isMesh && child.material) {
-                    if (child.material.transparent) {
-                        child.visible = false; // 隐藏透明效果
-                    }
-                }
-            });
-            
-            console.log('已启用低质量模式以提高性能');
-        }
-    }
-    
     // ==================== 游戏配置 ====================
     const CONFIG = {
         TILE_SIZE: 4,
@@ -6499,13 +6345,40 @@ boom boom boom</div>
             }
         }
         
-        // 随机打乱位置
+        // 智能选择传送门位置，确保传送门之间有足够距离
+        function getDistanceBetweenPositions(pos1, pos2) {
+            return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.z - pos2.z);
+        }
+        
+        // 选择传送门位置，确保每个传送门之间至少距离3格
+        const selectedPositions = [];
+        const minDistance = 3;
+        
+        // 随机打乱所有有效位置
         for (let i = validPositions.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [validPositions[i], validPositions[j]] = [validPositions[j], validPositions[i]];
         }
         
-        // 选择4个位置放置传送门（2红2蓝）
+        // 逐个选择位置，确保距离要求
+        for (const pos of validPositions) {
+            let tooClose = false;
+            
+            // 检查与已选位置的距离
+            for (const selectedPos of selectedPositions) {
+                if (getDistanceBetweenPositions(pos, selectedPos) < minDistance) {
+                    tooClose = true;
+                    break;
+                }
+            }
+            
+            if (!tooClose) {
+                selectedPositions.push(pos);
+                if (selectedPositions.length >= 4) break; // 最多4个传送门
+            }
+        }
+        
+        // 传送门颜色配置（2红2蓝）
         const portalColors = [
             { color: 0xff4444, emissive: 0xff0000, name: 'red' },
             { color: 0xff4444, emissive: 0xff0000, name: 'red' },
@@ -6513,8 +6386,8 @@ boom boom boom</div>
             { color: 0x4444ff, emissive: 0x0000ff, name: 'blue' }
         ];
         
-        for (let i = 0; i < 4 && i < validPositions.length; i++) {
-            const pos = validPositions[i];
+        for (let i = 0; i < selectedPositions.length && i < portalColors.length; i++) {
+            const pos = selectedPositions[i];
             const colorInfo = portalColors[i];
             
             const portal = createPortalMesh(colorInfo.color, colorInfo.emissive);
@@ -8283,24 +8156,6 @@ boom boom boom</div>
         // 播放音效
         soundManager.playExplosion();
         
-        // 检查某个位置周围是否至少有一个空格
-        function hasAdjacentEmpty(x, z) {
-            const dirs = [
-                { dx: 1, dz: 0 }, { dx: -1, dz: 0 },
-                { dx: 0, dz: 1 }, { dx: 0, dz: -1 }
-            ];
-            for (const dir of dirs) {
-                const nx = x + dir.dx;
-                const nz = z + dir.dz;
-                if (nx >= 1 && nx < CONFIG.GRID_WIDTH - 1 && 
-                    nz >= 1 && nz < CONFIG.GRID_HEIGHT - 1 &&
-                    grid[nz][nx] === TILE.EMPTY) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        
         // 找一个随机空地作为落点
         const emptySpots = [];
         for (let z = 1; z < CONFIG.GRID_HEIGHT - 1; z++) {
@@ -8313,8 +8168,7 @@ boom boom boom</div>
                             isSafe = false;
                         }
                     });
-                    // 确保落点周围至少有一个空格
-                    if (isSafe && hasAdjacentEmpty(x, z)) {
+                    if (isSafe) {
                         emptySpots.push({ x, z });
                     }
                 }
@@ -9113,9 +8967,6 @@ boom boom boom</div>
     // ==================== 主循环 - 优化版 ====================
     function animate() {
         requestAnimationFrame(animate);
-        
-        // 性能检测
-        checkPerformance();
         
         const dt = Math.min(clock.getDelta(), 0.1); // 限制最大delta防止跳帧
         
